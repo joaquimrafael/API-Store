@@ -41,5 +41,23 @@ namespace API_Store.Controllers
             return CreatedAtAction(nameof(GetById), new {id = newProduct.Id}, newProduct);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] Product product)
+        {
+            if (id != product.Id) { return BadRequest(); }
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing == null) { return NotFound(); }
+            await _repository.UpdateAsync(product);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing == null) { return NotFound(); }
+            await _repository.DeleteAsync(id);
+            return Ok();
+        }
     }
 }
